@@ -9,19 +9,20 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 	<style>
+		html {
+			height: 100%;
+		}
 		body {
 			font-family: "Press Start 2P";
 			max-width: 600px;
-			margin: 2rem auto;
 			padding: 1rem;
-	
-			/* Two background images: scrolling overlay on top */
+			margin: 2rem auto;
 			background-image: url('clouds.png');
 			background-repeat: repeat-x, no-repeat;
 			background-size: cover;
 			background-position: center;
 	
-			animation: scroll-bg 120s linear infinite;
+			animation: scroll-bg 1000s linear infinite;
 		}
 	
 		@keyframes scroll-bg {
@@ -30,7 +31,7 @@
 			}
 	
 			to {
-				background-position: -1000px 0, center;
+				background-position: -6000px 0, center;
 				/* scroll overlay moves left */
 			}
 		}
@@ -80,14 +81,18 @@
 				content: '...';
 			}
 		}
+		#chatForm {
+			display: flex;
+			width: 100%;
+		}
 	</style>
 </head>
 <body>
     <h1>WeatherBot</h1>
     <div id="chat"></div>
     <form id="chatForm">
-        <input type="text" id="userInput" placeholder="Ask about a city's weather..." style="width: 80%;" required>
-        <button type="submit">Send</button>
+        <input class="nes-input" type="text" id="userInput" placeholder="Ask about a city's weather..." style="width: 80%;" required>
+        <button class="nes-btn is-primary" type="submit">Send</button>
     </form>
 
     <script>
