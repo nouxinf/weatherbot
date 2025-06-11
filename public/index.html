@@ -1,0 +1,137 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Chatbot</title>
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: "Press Start 2P";
+			max-width: 600px;
+			margin: 2rem auto;
+			padding: 1rem;
+	
+			/* Two background images: scrolling overlay on top */
+			background-image: url('clouds.png');
+			background-repeat: repeat-x, no-repeat;
+			background-size: cover;
+			background-position: center;
+	
+			animation: scroll-bg 120s linear infinite;
+		}
+	
+		@keyframes scroll-bg {
+			from {
+				background-position: 0 0, center;
+			}
+	
+			to {
+				background-position: -1000px 0, center;
+				/* scroll overlay moves left */
+			}
+		}
+	
+		#chat {
+			border: 1px solid #ccc;
+			padding: 1rem;
+			height: 300px;
+			overflow-y: auto;
+			margin-bottom: 1rem;
+			white-space: pre-wrap;
+		}
+	
+		.user {
+			color: blue;
+		}
+	
+		.bot {
+			color: green;
+		}
+	
+		.dots::after {
+			content: '';
+			display: inline-block;
+			width: 1em;
+			text-align: left;
+			animation: dots 1s steps(4, end) infinite;
+		}
+	
+		@keyframes dots {
+	
+			0%,
+			20% {
+				content: '';
+			}
+	
+			40% {
+				content: '.';
+			}
+	
+			60% {
+				content: '..';
+			}
+	
+			80%,
+			100% {
+				content: '...';
+			}
+		}
+	</style>
+</head>
+<body>
+    <h1>WeatherBot</h1>
+    <div id="chat"></div>
+    <form id="chatForm">
+        <input type="text" id="userInput" placeholder="Ask about a city's weather..." style="width: 80%;" required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+		const chat = document.getElementById('chat');
+		const form = document.getElementById('chatForm');
+		const input = document.getElementById('userInput');
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const message = input.value.trim();
+			if (!message) return;
+
+			// Show user message
+			chat.innerHTML += `\n<span class="user">You: ${message}</span>`;
+
+			// Show typing indicator
+			const typingId = 'typing-indicator';
+			chat.innerHTML += `\n<span id="${typingId}" class="bot">Bot is typing<span class="dots">...</span></span>`;
+
+			input.value = '';
+			chat.scrollTop = chat.scrollHeight;
+
+			// Send message to server
+			const res = await fetch('/api/chat', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ message })
+			});
+
+			const data = await res.json();
+
+			// Remove typing indicator
+			const typingElement = document.getElementById(typingId);
+			if (typingElement) typingElement.remove();
+
+			if (data.reply) {
+				chat.innerHTML += `\n<span class="bot">Bot: ${data.reply}</span>`;
+			} else {
+				chat.innerHTML += `\n<span class="bot">Bot: Sorry, I couldn't get the weather info.</span>`;
+			}
+
+			chat.scrollTop = chat.scrollHeight;
+		});
+
+	</script>
+</body>
+</html>

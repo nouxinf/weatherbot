@@ -1,0 +1,19 @@
+{
+  "name": "weather-ai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nouxinf",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "chrono-node": "^2.8.2",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "nes.css": "^2.2.1",
+    "openai": "^5.1.1"
+  }
+}
