@@ -9,7 +9,7 @@ body {
     align-items: center;
     flex-direction: column;
 
-    font-family: "Press Start 2P";
+    font-family: "Press Start 2P", "SerenityOS Emoji";
     background-image: url('clouds.png');
     background-repeat: repeat-x;
     background-size: cover;
