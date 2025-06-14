@@ -10,6 +10,7 @@ WeatherBot is my submission for the Codédex June 2025 Challenge! It's an AI cha
 - **Meteomatics** – for weather data 🌦️
 - **OpenCage** – for converting place names to coordinates 🗺️
 - **nes.css** - for the retro UI look 🕹️
+- **SerenityOS Emoji** for the pixel art style emoji font
 
 ## Deployment
 
