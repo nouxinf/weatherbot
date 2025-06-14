@@ -93,3 +93,9 @@ body {
     padding: 0.5rem;
     font-family: inherit;
 }
+#topbtns {
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    position: fixed;
+}
