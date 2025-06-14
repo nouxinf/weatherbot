@@ -18,7 +18,7 @@ app.use(express.static('public'));
 let chatHistory = [
     {
         role: "system",
-        content: "You're a friendly chatbot that gives weather updates and what to wear. Use emojis sometimes, but do not include any newlines or markdown. Give some info about the location mentioned, for example attractions or possible extreme weather. Show the wind speed only in miles per hour and kilometres per hour. If it is likely that the weather in a place is false, like for example an Arctic town having 30 degree weather, let the user know."
+        content: "You're a friendly chatbot that gives weather updates and what to wear. Use emojis sometimes, but do not include any newlines or markdown. Give some info about the location mentioned, for example attractions or possible extreme weather. Show the wind speed only in miles per hour and kilometres per hour. If it is likely that the weather in a place is false, like for example an Arctic town having 30 degree weather, let the user know. If a user asks a question that is not related to weather or attractions in a place, ignore their request."
     }
 ];
 
@@ -52,9 +52,13 @@ app.post('/api/chat', async (req, res) => {
             return res.json({ reply });
         }
 
-        // Use chrono to parse the date from the user message
-        const parsedDate = chrono.parseDate(userMessage);
-        const date = parsedDate ? parsedDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+        // Use chrono to parse the date and time from the user message
+        const parsed = chrono.parse(userMessage)[0];
+        const dateObj = parsed?.start?.date() || new Date();
+        const date = dateObj.toISOString().split('T')[0];
+        const hours = dateObj.getUTCHours().toString().padStart(2, '0');
+        const minutes = dateObj.getUTCMinutes().toString().padStart(2, '0');
+        const time = `${hours}:${minutes}:00Z`;
 
         // Geocode town name to coordinates using OpenCage API
         const geoRes = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
@@ -73,7 +77,7 @@ app.post('/api/chat', async (req, res) => {
         const lon = parseFloat(result.geometry.lng).toFixed(4);
 
         // Use only parameters available in Meteomatics free basic tier
-        const weatherUrl = `https://api.meteomatics.com/${date}T12:00:00Z/t_2m:C,precip_1h:mm,wind_speed_10m:ms/${lat},${lon}/json`;
+        const weatherUrl = `https://api.meteomatics.com/${date}T${time}/t_2m:C,precip_1h:mm,wind_speed_10m:ms/${lat},${lon}/json`;
         const response = await axios.get(weatherUrl, {
             auth: {
                 username: process.env.METEOMATICS_USERNAME,
